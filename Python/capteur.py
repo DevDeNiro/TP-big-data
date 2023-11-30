@@ -1,4 +1,3 @@
-
 from kafka import *
 import datetime as dt
 import json
@@ -7,15 +6,18 @@ import time
 import uuid
 
 
-
 def generate_transaction():
     transaction_types = ['achat', 'remboursement', 'transfert']
     payment_methods = ['carte_de_credit', 'especes', 'virement_bancaire', 'erreur']
 
     current_time = dt.datetime.now().isoformat()
 
-    Villes = ["Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Nantes", "Strasbourg", "Montpellier", "Bordeaux", "Lille", "Rennes", "Reims", "Le Havre", "Saint-Étienne", "Toulon" , None]
-    Rues = ["Rue de la République", "Rue de Paris", "rue Auguste Delaune", "Rue Gustave Courbet ", "Rue de Luxembourg", "Rue Fontaine", "Rue Zinedine Zidane", "Rue de Bretagne", "Rue Marceaux", "Rue Gambetta", "Rue du Faubourg Saint-Antoine", "Rue de la Grande Armée", "Rue de la Villette", "Rue de la Pompe", "Rue Saint-Michel" , None]
+    Villes = ["Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Nantes", "Strasbourg", "Montpellier", "Bordeaux",
+              "Lille", "Rennes", "Reims", "Le Havre", "Saint-Étienne", "Toulon", None]
+    Rues = ["Rue de la République", "Rue de Paris", "rue Auguste Delaune", "Rue Gustave Courbet ", "Rue de Luxembourg",
+            "Rue Fontaine", "Rue Zinedine Zidane", "Rue de Bretagne", "Rue Marceaux", "Rue Gambetta",
+            "Rue du Faubourg Saint-Antoine", "Rue de la Grande Armée", "Rue de la Villette", "Rue de la Pompe",
+            "Rue Saint-Michel", None]
 
     transaction_data = {
         "id_transaction": str(uuid.uuid4()),
@@ -41,12 +43,36 @@ def generate_transaction():
     return transaction_data
 
 
-#Envoyer la data sur votre conducktor
+# Envoyer la data sur votre conducktor
+producer = KafkaProducer(
+    bootstrap_servers=['localhost:9092'],
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
+)
 
+topic_name = 'tp-big-data'
 
-#--------------------------------------------------------------------
+# génération des transactions
+try:
+    while True:
+        # Générer une transaction
+        transaction = generate_transaction()
+
+        # Envoyer la transaction au topic Kafka
+        producer.send(topic_name, transaction)
+        print(f"Message envoyé : {transaction}")
+
+        # Pause entre les envois, toutes les 1 secondes
+        time.sleep(1)
+
+except KeyboardInterrupt:
+    print("Arrêt du producteur")
+
+finally:
+    # Nettoyage et fermeture du producteur
+    producer.close()
+# --------------------------------------------------------------------
 #                     MANIP SUR LES DF
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 #       convertir USD en EUR
 #       ajouter le TimeZone
 #       remplacer la date en string en une valeur date
@@ -54,16 +80,11 @@ def generate_transaction():
 #       supprimer les valeur en None ( Adresse )
 
 
-
 # si ça vous gene faite mettez tout sur la meme partie ( en gros supprimer les sous structure pour tout mettre en 1er plan )
 # modifier le consumer avant
-
 
 
 # KAFKA PRODUCEUR
 # Reception des donnes en Pyspark ou en Spark scala
 # Manip
 # Envoie dans un bucket Minio ou sur hadoop pour les plus téméraire
-
-
-

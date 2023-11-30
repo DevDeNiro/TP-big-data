@@ -18,7 +18,6 @@ services:
       - MINIO_SECRET_KEY=minio123
     networks:
       - spark_network
-
       
   mc:
     image: minio/mc
@@ -34,8 +33,6 @@ services:
       - minio
     networks:
       - spark_network
-
-
       
 networks:
   spark_network:
