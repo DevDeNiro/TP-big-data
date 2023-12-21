@@ -6,6 +6,7 @@ import os
 # os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.hadoop:hadoop-aws:3.2.0 pyspark-shell'
 # os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.hadoop:hadoop-aws:3.2.0,org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 pyspark-shell'
 
+# NE FONCTIONNE PAS#
 
 # --------------------------------PARTIE 1------------------------------------ #
 # initialisation de SparkSession + configuration pour Minio
